@@ -1,1 +1,1 @@
-# discourse-open-categories
+# discourse-open-community
