@@ -1,0 +1,10 @@
+{{#if siteSettings.open_community_enabled}}
+<section class='field'>
+  <div class="suppress-category-listing">
+    <label class="checkbox-label">
+      {{input type="checkbox" checked=category.suppress_category_listing}}
+      {{i18n 'suppress_category_listing.enable'}}
+    </label>
+  </div>
+</section>
+{{/if}}

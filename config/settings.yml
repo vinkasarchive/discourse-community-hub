@@ -1,0 +1,4 @@
+plugins:
+  open_community_enabled:
+    default: true
+    client: true

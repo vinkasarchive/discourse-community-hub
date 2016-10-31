@@ -1,0 +1,4 @@
+en:
+  js:
+    suppress_category_listing:
+      enable: "Suppress this category from the list of categories."
