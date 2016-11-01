@@ -1,12 +1,16 @@
 <section class='category-heading'>
+  {{#if category.parentCategory}}
+    <div class="parent-category">
+      {{category-link category.parentCategory allowUncategorized=true hideParent=false}}
+    </div>
+  {{/if}}
   {{#if category.logo_url}}
     {{cdn-img src=category.logo_url class="category-logo"}}
-    <h1>{{category.name}}</h1>
-    {{#if category.description}}
-      <p>{{{category.description}}}</p>
-    {{/if}}
-  {{else}}
-    <h1>{{category.name}}</h1>
+  {{/if}}
+  <h1>{{category.name}}</h1>
+  {{#if category.description}}
+    <p>{{{category.description}}}</p>
+    {{category.topicsCount}}
   {{/if}}
 </section>
 
