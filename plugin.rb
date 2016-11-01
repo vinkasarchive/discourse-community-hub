@@ -1,68 +1,35 @@
-# name: open-community
-# about: Open Community plugin for Discourse
+# name: community_hub
+# about: Community Hub plugin for Discourse
 # version: 0.0.1
 # authors: Vinoth Kannan (vinothkannan@vinkas.com)
 
-OPEN_COMMUNITY = 'discourse_open_community'.freeze
+COMMUNITY_HUB = 'community_hub'.freeze
 
-SUPPRESS_CATEGORY_LISTING = 'suppress_category_listing'.freeze
-OPEN_COMMUNITY_CATEGORIES = 'open_community_categories'.freeze
+enabled_site_setting :community_hub_enabled
 
-enabled_site_setting :open_community_enabled
-
-register_asset 'stylesheets/open-community.scss'
+register_asset 'stylesheets/community_hub.scss'
 
 after_initialize do
 
-  module ::DiscourseOpenCommunity
+  module ::CommunityHub
     class Engine < ::Rails::Engine
-      engine_name OPEN_COMMUNITY
-      isolate_namespace DiscourseOpenCommunity
+      engine_name COMMUNITY_HUB
+      isolate_namespace CommunityHub
     end
+  end
+
+  CommunityHub::Engine.routes.draw do
+    get "/" => "communities#index"
+    post "/" => "communities#create"
+  end
+
+  Discourse::Application.routes.append do
+    mount ::CommunityHub::Engine, at: "/communities"
   end
 
   require_dependency 'application_controller'
-  class DiscourseOpenCommunity::OpenCommunityController < ::ApplicationController
+  class CommunityHub::CommunitiesController < ::ApplicationController
 
   end
-
-  class ::Guardian
-
-    @@allowed_open_community_categories_cache = DistributedCache.new(OPEN_COMMUNITY_CATEGORIES)
-
-    def self.reset_open_community_categories_cache
-      @@allowed_open_community_categories_cache["allowed"] =
-        begin
-          Set.new(
-            CategoryCustomField
-              .where(name: OPEN_COMMUNITY_CATEGORIES, value: "true")
-              .pluck(:category_id)
-          )
-          Set.new(
-            CategoryCustomField
-              .where(name: SUPPRESS_CATEGORY_LISTING, value: "true")
-              .pluck(:category_id)
-          )
-        end
-    end
-
-    def open_community_category?(category_id)
-      self.class.reset_open_community_categories_cache unless @@allowed_open_community_categories_cache["allowed"]
-      @@allowed_open_community_categories_cache["allowed"].include?(category_id)
-    end
-
-  end
-
-  class ::Category
-    after_save :reset_open_community_categories_cache
-
-    protected
-    def reset_open_community_categories_cache
-      ::Guardian.reset_open_community_categories_cache
-    end
-  end
-
-  add_to_serializer(:site, :open_community_category_ids) { CategoryCustomField.where(name: OPEN_COMMUNITY_CATEGORIES, value: "true").pluck(:category_id) }
-  add_to_serializer(:site, :suppressed_category_listing_ids) { CategoryCustomField.where(name: SUPPRESS_CATEGORY_LISTING, value: "true").pluck(:category_id) }
 
 end

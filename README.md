@@ -1,1 +1,1 @@
-# discourse-open-community
+# Community Hub for Discourse

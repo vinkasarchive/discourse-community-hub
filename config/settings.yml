@@ -1,4 +1,4 @@
 plugins:
-  open_community_enabled:
+  community_hub_enabled:
     default: true
     client: true
