@@ -1,4 +1,4 @@
-# name: community_hub
+# name: community-hub
 # about: Community Hub plugin for Discourse
 # version: 0.0.1
 # authors: Vinoth Kannan (vinothkannan@vinkas.com)
@@ -7,7 +7,7 @@ COMMUNITY_HUB = 'community_hub'.freeze
 
 enabled_site_setting :community_hub_enabled
 
-register_asset 'stylesheets/community_hub.scss'
+register_asset 'stylesheets/community-hub.scss'
 
 after_initialize do
 
@@ -28,7 +28,9 @@ after_initialize do
   end
 
   require_dependency 'application_controller'
+
   class CommunityHub::CommunitiesController < ::ApplicationController
+    requires_plugin COMMUNITY_HUB
 
   end
 
