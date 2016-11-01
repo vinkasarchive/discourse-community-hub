@@ -21,7 +21,12 @@ after_initialize do
     end
   end
 
-  class DiscourseOpenCommunity::Guardian
+  require_dependency 'application_controller'
+  class DiscourseOpenCommunity::OpenCommunityController < ::ApplicationController
+
+  end
+
+  class ::Guardian
 
     @@allowed_open_community_categories_cache = DistributedCache.new(OPEN_COMMUNITY_CATEGORIES)
 
