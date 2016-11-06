@@ -2,6 +2,7 @@
 # about: Community Hub plugin for Discourse
 # version: 0.0.1
 # authors: Vinoth Kannan (vinothkannan@vinkas.com)
+# url: https://codiss.com/c/discourse-community-hub
 
 enabled_site_setting :community_hub_enabled
 

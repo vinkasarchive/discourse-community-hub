@@ -1,3 +1,5 @@
 en:
   js:
     community_hub: "Community Hub"
+    communities_category:
+      enable: "Allow creating communities in this category"
