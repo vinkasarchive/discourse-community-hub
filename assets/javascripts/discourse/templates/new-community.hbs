@@ -1,0 +1,22 @@
+<div class="modal-body">
+  <form>
+    <section class='field'>
+      <section class='field-item'>
+        <label>{{i18n "community.field.name"}}</label>
+        {{text-field value=community.name placeholderKey="community.name_placeholder" maxlength="50"}}
+      </section>
+      <section class='field-item'>
+        <label>{{i18n "community.field.slug"}}</label>
+        {{text-field value=community.slug placeholderKey="community.slug_placeholder" maxlength="255"}}
+      </section>
+    </section>
+
+    <section class='field'>
+      <label>{{i18n "community_hub.field.description"}}</label>
+      {{textarea name="new_description" value=controller.new_description}}
+    </section>
+  </form>
+</div>
+<div class="modal-footer community-hub-footer">
+  {{d-button class="btn-primary" action="new" icon="plus" label="community.create.button"}}
+</div>

@@ -1,3 +1,13 @@
 en:
   js:
-    community_hub: "Community Hub"
+    community_hub:
+      name: "Community Hub"
+    community:
+      field:
+        name: "Name"
+        description: "Description"
+      new:
+        button: "New Community"
+        modal_title: "Add New Community"
+      create:
+        button: "Create Community"
