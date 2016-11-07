@@ -4,8 +4,12 @@ en:
       name: "Community Hub"
     community:
       field:
-        name: "Name"
+        name: "Community Name"
+        slug: "Community Slug"
         description: "Description"
+      placeholder:
+        name: "One or two words maximum"
+        slug: "(Optional) dashed-words for url"
       new:
         button: "New Community"
         modal_title: "Add New Community"

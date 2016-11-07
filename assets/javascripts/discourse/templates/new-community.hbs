@@ -3,17 +3,17 @@
     <section class='field'>
       <section class='field-item'>
         <label>{{i18n "community.field.name"}}</label>
-        {{text-field value=community.name placeholderKey="community.name_placeholder" maxlength="50"}}
+        {{text-field value=controller.name placeholderKey="community.placeholder.name" maxlength="50"}}
       </section>
       <section class='field-item'>
         <label>{{i18n "community.field.slug"}}</label>
-        {{text-field value=community.slug placeholderKey="community.slug_placeholder" maxlength="255"}}
+        {{text-field value=controller.slug placeholderKey="community.placeholder.slug" maxlength="255"}}
       </section>
     </section>
 
     <section class='field'>
-      <label>{{i18n "community_hub.field.description"}}</label>
-      {{textarea name="new_description" value=controller.new_description}}
+      <label>{{i18n "community.field.description"}}</label>
+      {{textarea value=controller.description}}
     </section>
   </form>
 </div>

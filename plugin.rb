@@ -5,10 +5,11 @@
 
 enabled_site_setting :community_hub_enabled
 
+register_custom_html extraNavItem: "<li id='communities-menu-item'><a href='/communities'>Communities</a></li>"
+
 register_asset 'stylesheets/community-hub.scss'
 
-PLUGIN_NAME ||= 'community_hub'.freeze
-STORE_NAME ||= "communities".freeze
+PLUGIN_NAME ||= 'community'.freeze
 
 after_initialize do
 
@@ -22,48 +23,44 @@ after_initialize do
   class CommunityHub::Community
     class << self
 
-      def add(user_id, name, description)
+      def add(name, slug, description, user)
 
         # TODO add i18n string
-        raise StandardError.new "communities.missing_name" if name.blank?
-        raise StandardError.new "communities.missing_description" if description.blank?
+        raise StandardError.new "community.missing.name" if name.blank?
+        raise StandardError.new "community.missing.slug" if slug.blank?
+        raise StandardError.new "community.missing.description" if description.blank?
 
         id = SecureRandom.hex(16)
-        record = {id: id, name: name, description: description}
+        record = {name: name, slug: slug, description: description, user_id: user.id}
 
-        communities = PluginStore.get(PLUGIN_NAME, STORE_NAME)
-        communities = Hash.new if replies == nil
-
-        communities[id] = record
-        PluginStore.set(PLUGIN_NAME, STORE_NAME, communities)
+        PluginStore.set(PLUGIN_NAME, id, record)
 
         record
       end
 
-      def all(user_id)
-        communities = PluginStore.get(PLUGIN_NAME, STORE_NAME)
+      def all()
+        communities = Array.new
+        result = PluginStoreRow.where(plugin_name: PLUGIN_NAME)
 
-        return {} if communities.blank?
+        return communities if result.blank?
 
-        communities.each do |id, value|
-          value['cooked'] = PrettyText.cook(value['description'])
-          value['usages'] = 0 unless value.key?('usages')
-          communities[id] = value
+        result.each do |c|
+          communities.push(PluginStore.cast_value(c.type_name, c.value))
         end
-        #sort by usages
-        communities =  communities.sort_by {|key, value| value['usages']}.reverse.to_h
+
+        communities
       end
 
     end
   end
 
   CommunityHub::Engine.routes.draw do
-    get "/" => "communities#index"
-    post "/" => "communities#create"
+    get "/communities" => "communities#index"
+    post "/communities" => "communities#create"
   end
 
   Discourse::Application.routes.append do
-    mount ::CommunityHub::Engine, at: "/communities"
+    mount ::CommunityHub::Engine, at: "/"
   end
 
   require_dependency 'application_controller'
@@ -74,12 +71,11 @@ after_initialize do
     before_filter :ensure_logged_in
 
     def create
-      name   = params.require(:name)
+      name = params.require(:name)
+      slug = params.require(:slug)
       description = params.require(:description)
-      user_id  = current_user.id
-
       begin
-        record = CommunityHub::Community.add(user_id, name, description)
+        record = CommunityHub::Community.add(name, slug, description, current_user)
         render json: record
       rescue StandardError => e
         render_json_error e.message
@@ -90,7 +86,7 @@ after_initialize do
 
       begin
         communities = CommunityHub::Community.all()
-        render json: {replies: communities}
+        render json: {communities: communities}
       rescue StandardError => e
         render_json_error e.message
       end
