@@ -15,3 +15,5 @@ en:
         modal_title: "Add New Community"
       create:
         button: "Create Community"
+    communities:
+      title:  "Communities"
