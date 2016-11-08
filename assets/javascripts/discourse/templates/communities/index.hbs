@@ -1,5 +1,31 @@
-{{d-button class="btn-default pull-right" action="newCommunity" icon="plus" label="community.new.button"}}
-
-{{#each model.communities as |c|}}
-
-{{/each}}
+<div class="container list-container">
+  <div class="row">
+    <div class="full-width">
+      <div id="list-area">
+        <div class="list-controls">
+          <div class="container">
+            <div class="communities-menu btn-group">
+              {{d-button class="btn-default pull-right" action="newCommunity" icon="plus" label="community.new.button"}}
+            </div>
+            <h2>{{i18n "communities.title"}}</h2>
+          </div>
+        </div>
+        <hr>
+        <div class="community-list">
+          {{#each model.communities as |c|}}
+            <div class="badge-card medium hyperlink">
+              <div class="badge-contents">
+                <div class="badge-info">
+                  <div class="badge-info-item">
+                    <h3>{{c.name}}</h3>
+                    <div class="badge-summary">{{c.description}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
