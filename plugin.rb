@@ -24,7 +24,7 @@ after_initialize do
   class CommunityHub::Community
     class << self
 
-      def plugin_store_name()
+      def plugin_store_name
         PLUGIN_STORE_NAME
       end
 
@@ -38,14 +38,14 @@ after_initialize do
         id = SecureRandom.hex(16)
         record = {name: name, slug: slug, description: description, user_id: user.id}
 
-        PluginStore.set(this.plugin_store_name, id, record)
+        PluginStore.set(plugin_store_name, id, record)
 
         record
       end
 
-      def all()
+      def all
         communities = Array.new
-        result = PluginStoreRow.where(plugin_name: this.plugin_store_name)
+        result = PluginStoreRow.where(plugin_name: plugin_store_name)
 
         return communities if result.blank?
 
@@ -56,12 +56,26 @@ after_initialize do
         communities
       end
 
+      def findBySlug(slug)
+        result = PluginStoreRow.where(plugin_name: plugin_store_name)
+                               .where('value LIKE ?', ['%\"', slug,  '\"%'].join)
+
+        result.each do |c|
+          community = PluginStore.cast_value(c.type_name, c.value)
+          return community if community['slug'].eql? slug
+        end
+
+        Array.new
+      end
+
     end
   end
 
   CommunityHub::Engine.routes.draw do
     get "/communities" => "communities#index"
     post "/communities" => "communities#create"
+
+    get "/m/:slug" => "communities#show"
   end
 
   Discourse::Application.routes.append do
@@ -73,7 +87,17 @@ after_initialize do
   class CommunityHub::CommunitiesController < ::ApplicationController
     requires_plugin PLUGIN_NAME
 
-    before_filter :ensure_logged_in
+    before_filter :ensure_logged_in, only: [:create, :index]
+
+    def show
+      slug = params.require(:slug)
+      community = CommunityHub::Community.findBySlug(slug)
+      begin
+        render json: community
+      rescue StandardError => e
+        render_json_error e.message
+      end
+    end
 
     def create
       name = params.require(:name)

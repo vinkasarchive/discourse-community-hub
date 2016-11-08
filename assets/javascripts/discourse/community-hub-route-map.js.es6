@@ -1,8 +1,10 @@
-export default {
-  resource: 'communities',
-  map() {
-    this.route('communities', { resetNamespace: true }, function() {
-      this.route('index', { path: '/' });
-    });
-  }
+
+export default function() {
+
+  this.route('communities', { path: '/communities', resetNamespace: true }, function() {
+    this.route('index', { path: '/' });
+  });
+
+  this.route('community', { path: '/m/:slug', resetNamespace: true });
+
 };
