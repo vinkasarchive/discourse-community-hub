@@ -9,7 +9,8 @@ register_custom_html extraNavItem: "<li id='communities-menu-item'><a href='/com
 
 register_asset 'stylesheets/community-hub.scss'
 
-PLUGIN_NAME ||= 'community'.freeze
+PLUGIN_NAME ||= 'community-hub'.freeze
+PLUGIN_STORE_NAME ||= 'community'.freeze
 
 after_initialize do
 
@@ -23,6 +24,10 @@ after_initialize do
   class CommunityHub::Community
     class << self
 
+      def plugin_store_name()
+        PLUGIN_STORE_NAME
+      end
+
       def add(name, slug, description, user)
 
         # TODO add i18n string
@@ -33,14 +38,14 @@ after_initialize do
         id = SecureRandom.hex(16)
         record = {name: name, slug: slug, description: description, user_id: user.id}
 
-        PluginStore.set(PLUGIN_NAME, id, record)
+        PluginStore.set(this.plugin_store_name, id, record)
 
         record
       end
 
       def all()
         communities = Array.new
-        result = PluginStoreRow.where(plugin_name: PLUGIN_NAME)
+        result = PluginStoreRow.where(plugin_name: this.plugin_store_name)
 
         return communities if result.blank?
 
